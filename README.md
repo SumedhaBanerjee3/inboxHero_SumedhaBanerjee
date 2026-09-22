@@ -139,16 +139,6 @@ Answer: The system records the exact message id, the route used, the proposed ac
 Answer: The code exposes the roles of a framework via a simple router, a persistent preference store, a pipeline orchestrator, and a guarded outbox writer. A framework would offer concurrency, orchestration libraries, and more elaborate tool-call plumbing, but for this assignment the built-in components keep the architecture clearer and safer than a heavyweight multi-agent setup.
 
 
-What to verify:
-- the CLI exits cleanly with no syntax errors,
-- the capability output is JSON-serializable,
-- each run writes or updates the expected artifacts (`trace.jsonl`, `prefs.json`, `dashboard.json`, and/or the `outbox` directory),
-- the dry-run gate does not create real outbound messages,
-- hostile instructions are refused and remain in place,
-- the preference survives a restart and changes later behavior,
-- the environment stays free of secrets by using `.env` locally and keeping `.env.example` as the safe template.
 
-## Notes
+Note:The project uses a placeholder Gemini API key in the config files for compatibility with the required LLM integration.
 
-- The project uses a placeholder Gemini API key in the config files for compatibility with the required LLM integration.
-- Do not commit `.env` to source control; keep `.env.example` as the public template.
