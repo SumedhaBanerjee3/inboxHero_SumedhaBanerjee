@@ -1,0 +1,108 @@
+{
+  "student": "Sumedha Banerjee, evernorth-aai-817080",
+  "repo": "https://github.com/you/inboxhero",
+  "system": {
+    "framework": "none",
+    "model": "Google Gemini via GEMINI_API_KEY; a placeholder key is kept in .env.example and a real key can be stored in .env for live runs",
+    "messages_processed": 100,
+    "rule_handled": 48,
+    "dispositions": ["reply", "archive", "defer", "delegate", "escalate"],
+    "retrieval": "thread-walk",
+    "irreversible": ["send", "delete"],
+    "reversible": ["draft", "label", "archive", "defer"],
+    "gate": "both",
+    "preference_demo": "m015: always CC the co-founder on Legal mail"
+  },
+  "capabilities": [
+    {
+      "id": "R1",
+      "name": "Zero the inbox",
+      "tier": "C",
+      "claim": "Assigns every message exactly one disposition and a clear reason, leaving no message undecided.",
+      "command": "python demo.py --cap R1",
+      "observable": "Prints one decision entry per message and records each in the trace log.",
+      "evidence": "trace.jsonl with decision events tagged cap=R1"
+    },
+    {
+      "id": "R2",
+      "name": "Grounded reply",
+      "tier": "B",
+      "claim": "Drafts a reply grounded in the earlier message in the thread and cites the relevant message ids.",
+      "command": "python demo.py --cap R2 --msg m008",
+      "observable": "Returns a draft together with a cited list, proving the reply is anchored in earlier mailbox content.",
+      "evidence": "trace and draft output include earlier message ids used as evidence"
+    },
+    {
+      "id": "R3",
+      "name": "Gate the irreversible",
+      "tier": "C",
+      "claim": "Never sends or deletes without approval or an explicit dry-run, and logs the decision.",
+      "command": "python demo.py --cap R3 --dry-run",
+      "observable": "Shows the proposed send/delete actions without executing them, and keeps the gate in place for live execution.",
+      "evidence": "trace.jsonl with gate events and proposed action details"
+    },
+    {
+      "id": "R4",
+      "name": "Persistent preference",
+      "tier": "C",
+      "claim": "Stores a user preference on disk and reapplies it after a fresh process start.",
+      "command": "python demo.py --cap R4",
+      "observable": "Writes the preference to a persistent file and then applies it on a later run.",
+      "evidence": "prefs.json on disk between runs"
+    },
+    {
+      "id": "R5",
+      "name": "Refuse embedded instructions",
+      "tier": "C",
+      "claim": "Detects hostile embedded instructions, refuses them, and keeps the email in place.",
+      "command": "python demo.py --cap R5",
+      "observable": "Reports a refusal for the malicious message and writes nothing to the outbox.",
+      "evidence": "trace.jsonl refusal events naming message ids"
+    },
+    {
+      "id": "R6",
+      "name": "Dashboard",
+      "tier": "C",
+      "claim": "Builds a three-pane dashboard with pending, flagged, and commitment sections derived from the run.",
+      "command": "python demo.py --cap R6",
+      "observable": "Produces a stable JSON dashboard featuring pending actions, flagged items, and a list of commitments with sources.",
+      "evidence": "dashboard.json or equivalent report produced by the run"
+    },
+    {
+      "id": "X1",
+      "name": "Follow-up tracking",
+      "tier": "B",
+      "claim": "Finds unanswered sent mail and drafts a follow-up chase for each eligible message.",
+      "command": "python demo.py --cap X1",
+      "observable": "Prints a list of {message_id, days_waiting, draft} for unanswered items.",
+      "evidence": "trace and output from the X1 run"
+    },
+    {
+      "id": "X2",
+      "name": "Morning digest",
+      "tier": "B",
+      "claim": "Summarises what needs attention today, what can wait, and what was auto-archived.",
+      "command": "python demo.py --cap X2",
+      "observable": "Prints three sections: needs you, can wait, and auto-archived items.",
+      "evidence": "plain-text digest output from the capability run"
+    },
+    {
+      "id": "X3",
+      "name": "Unread-by-sender summary",
+      "tier": "A",
+      "claim": "Lists all unread mail grouped by sender in a single, easy-to-judge output.",
+      "command": "python demo.py --cap X3",
+      "observable": "Prints a grouped summary such as sender -> message_ids without any extra model or multi-step orchestration.",
+      "evidence": "capability output and trace event tagged cap=X3"
+    },
+    {
+      "id": "X4",
+      "name": "Structured deadline extraction",
+      "tier": "A",
+      "claim": "Extracts deadlines and ownership from the inbox into a structured list with message ids and due dates.",
+      "command": "python demo.py --cap X4",
+      "observable": "Returns a JSON list of {message_id, deadline, owner, subject} for messages with due dates or deadline language.",
+      "evidence": "trace event tagged cap=X4 and the resulting JSON payload"
+    }
+  ]
+}
